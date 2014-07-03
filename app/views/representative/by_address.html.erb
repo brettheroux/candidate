@@ -1,0 +1,35 @@
+<% content_for :head do %>
+    <%= javascript_include_tag 'amcharts' %>
+    <%= javascript_include_tag 'pie' %>
+<% end %>
+<pre>
+	<%= @pretty %>
+</pre>
+<div>
+	State Representative
+</div>
+<%= render partial: 'representative', collection: @info.state_representatives %>
+<div>
+  State Representative Candidates
+</div>
+<%= render partial: 'candidate', collection: @info.state_rep_candidates.candidates %>
+<div>
+  State Senators
+</div>
+<%= render partial: 'representative', collection: @info.state_senators %>
+<div>
+  State Senate Candidates
+</div>
+<div>
+  <%= render partial: 'candidate', collection: @info.state_senate_candidates.candidates %>
+</div>
+<div>
+	US Representative
+</div>
+<%= render partial: 'representative', collection: @info.representative %>
+<div>
+	US Senators
+</div>
+<%= render partial: 'representative', collection: @info.senators %>
+<script type="text/javascript" src="http://www.followthemoney.org/widgets/NIMSP_W.js"></script>
+<script type="text/javascript" src="http://www.followthemoney.org/widget/statewidget.php?s=<%= @info.state %>"></script>

@@ -1,0 +1,84 @@
+<div>
+  <%= candidate['candidate_name'] %>
+  <%= candidate['party'] %>
+  <%= candidate['candidate_status'] %>
+</div>
+
+<% qualifier = candidate['candidate_name'].gsub(/(\W|\d)/, "") %>
+
+<% if candidate['total_contribution_records'] == '0' %>
+    <div>
+      This candidate had no contributions
+    </div>
+<% else %>
+    <div>
+      Total contribution dollars: $<%= number_with_delimiter(candidate['total_dollars'], :delimiter => ',') %>
+    </div>
+    <%
+       contributors = candidate['top_contributors'].top_contributors
+    %>
+    <div id="<%= qualifier %>" style="height: 800px;font-size: 11px;"></div>
+    <div>
+      <%= render partial: 'top_contributor', collection: contributors %>
+      <% content_for :head do %>
+          <script type="text/javascript">
+              var chart<%= qualifier %>;
+
+              var chartData<%= qualifier %> = [
+                  <%= render partial: 'contributors', object: contributors %>
+              ];
+
+              AmCharts.ready(function () {
+                  // PIE CHART
+//                  chart<%= qualifier %> = new AmCharts.AmPieChart();
+//                  chart<%= qualifier %>.dataProvider = chartData<%= qualifier %>;
+//                  chart<%= qualifier %>.titleField = "contributor_name";
+//                  chart<%= qualifier %>.valueField = "total_dollars";
+//                  chart<%= qualifier %>.outlineColor = "#FFFFFF";
+//                  chart<%= qualifier %>.outlineAlpha = 0.8;
+//                  chart<%= qualifier %>.outlineThickness = 2;
+//                  chart<%= qualifier %>.balloonText = '[[title]]: $[[value]]';
+
+                  chart<%= qualifier %> = new AmCharts.AmSerialChart();
+                  chart<%= qualifier %>.dataProvider = chartData<%= qualifier %>;
+                  chart<%= qualifier %>.categoryField = "contributor_name";
+                  chart<%= qualifier %>.rotate = true;
+                  chart<%= qualifier %>.depth3D = 20;
+                  chart<%= qualifier %>.angle = 30;
+
+                  // AXES
+                  // Category
+                  var categoryAxis = chart<%= qualifier %>.categoryAxis;
+                  categoryAxis.gridPosition = "start";
+                  categoryAxis.axisColor = "#DADADA";
+                  categoryAxis.fillAlpha = 1;
+                  categoryAxis.gridAlpha = 0;
+                  categoryAxis.fillColor = "#FAFAFA";
+
+                  // value
+                  var valueAxis = new AmCharts.ValueAxis();
+                  valueAxis.axisColor = "#DADADA";
+                  valueAxis.title = "Total contributions, USD";
+                  valueAxis.gridAlpha = 0.1;
+                  chart<%= qualifier %>.addValueAxis(valueAxis);
+
+                  // GRAPH
+                  var graph = new AmCharts.AmGraph();
+                  graph.title = "Contributions";
+                  graph.valueField = "total_dollars";
+                  graph.type = "column";
+                  graph.balloonText = "Total contributions for [[category]]: $[[value]]";
+                  graph.lineAlpha = 0;
+                  graph.fillColors = "#bf1c25";
+                  graph.fillAlphas = 1;
+                  chart<%= qualifier %>.addGraph(graph);
+
+                  chart<%= qualifier %>.creditsPosition = "top-right";
+
+                  // WRITE
+                  chart<%= qualifier %>.write("<%= qualifier %>");
+              });
+          </script>
+    <% end %>
+  <% end %>
+</div>

@@ -1,0 +1,11 @@
+<div>
+	<%= representative['name'] %>
+</div>
+<div>
+	<%= representative['party'] %>
+</div>
+<% if (not(representative['emails'].nil? || representative['emails'].empty?)) %>
+	<div>
+		<%= representative['emails'].first %>
+	</div>
+<% end %>
